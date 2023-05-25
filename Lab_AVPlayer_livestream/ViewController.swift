@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     lazy var playerItem = {
         let url = URL(string: "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.YtnrVcQbttF0.m3u8")!
 
-//        let url = URL(string: "https://flutter.github.io/assets-for-api-docs/assets/videos/hls/bee.m3u8")!
+        //        let url = URL(string: "https://flutter.github.io/assets-for-api-docs/assets/videos/hls/bee.m3u8")!
 
         let item = AVPlayerItem(url: url)
 
@@ -57,6 +57,7 @@ class ViewController: UIViewController {
         isPlaybackLikelyToKeepUpListener?.invalidate()
         isPlaybackLikelyToKeepUpListener = item.observe(\.isPlaybackLikelyToKeepUp, options: [.initial, .new]) { [weak self] _, change in
             guard let new = change.newValue else { return }
+            print("check isPlaybackBufferEmpty ---> \(item.isPlaybackBufferEmpty)")
             print("isPlaybackLikelyToKeepUp ---> \(new)")
         }
         return item
@@ -75,7 +76,9 @@ class ViewController: UIViewController {
         let new = CMTime(value: CMTimeValue(Float(duration.value) * sender.value), timescale: duration.timescale)
 
         player.currentItem?.cancelPendingSeeks()
+        print("\n\n>>>>>>> SEEK BEGIN >>>>>>>")
         player.currentItem?.seek(to: range.start + new) { [weak self] _ in
+            print("<<<<<<<< SEEK END <<<<<<<<")
             self?.player?.play()
         }
     }
